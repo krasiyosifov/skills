@@ -10,13 +10,10 @@ This repository contains reusable, agent-agnostic AI agent skills. Skills follow
 skills/
 ├── AGENTS.md            ← You are here
 ├── README.md            ← Public-facing documentation
-├── community/           ← Community / third-party skills
-│   └── <skill-name>/
-│       ├── SKILL.md           ← Required: skill definition
-│       ├── REFERENCE.md       ← Optional: extended reference
-│       └── references/        ← Optional: additional reference files
-├── custom/              ← Your own custom skills
-└── templates/           ← Skill scaffolding templates
+└── <skill-name>/
+    ├── SKILL.md           ← Required: skill definition
+    ├── REFERENCE.md       ← Optional: extended reference
+    └── references/        ← Optional: additional reference files
 ```
 
 ## Skill Conventions
@@ -67,11 +64,11 @@ description: <one-line description of when and what this skill does>
 
 ### Discovering Skills
 
-Scan the `community/` and `custom/` directories for available skills. The `SKILL.md` frontmatter `description` field is the primary discovery signal.
+Scan the repository root for available skills. The `SKILL.md` frontmatter `description` field is the primary discovery signal.
 
 ### Adding a New Skill
 
-1. Create a folder under `community/` (for shared skills) or `custom/` (for personal skills)
+1. Create a folder at the repository root named after the skill
 2. Write `SKILL.md` with proper frontmatter — `name` must match the folder name and follow naming constraints
 3. Add `REFERENCE.md` or a `references/` directory for extended reference material
 4. Keep SKILL.md concise (under 500 lines); move detailed playbooks to referenced files

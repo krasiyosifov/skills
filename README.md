@@ -4,12 +4,11 @@ Reusable AI agent skills
 ## Structure
 
 ```
-├── community/          ← Skills from the ecosystem / third-party
-│   └── package-security-review/
-│       ├── SKILL.md
-│       └── REFERENCE.md
-├── custom/             ← Your own custom skills (create as needed)
-└── templates/          ← Skill scaffolding templates (create as needed)
+├── package-security-review/
+│   ├── SKILL.md
+│   └── REFERENCE.md
+├── AGENTS.md
+└── README.md
 ```
 
 ## Adding a skill
@@ -19,3 +18,17 @@ Reusable AI agent skills
 3. Skills are agent-agnostic — any agent that supports the standard skill format can use them
 
 All skills must comply with the [Agent Skills specification](https://agentskills.io/client-implementation/adding-skills-support).
+
+## Installing
+
+### Install a specific skill
+
+```bash
+npx skills add https://github.com/krasiyosifov/skills --skill package-security-review
+```
+
+### Install all skills from this repo
+
+```bash
+npx skills add krasiyosifov/skills
+```
