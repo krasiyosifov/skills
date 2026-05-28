@@ -13,7 +13,7 @@ Reusable AI agent skills
 
 ## Adding a skill
 
-1. Create a folder under `community/` or `custom/` named after the skill
+1. Create a folder at the repository root named after the skill
 2. Add a `SKILL.md` (required) and any supporting files (e.g. `REFERENCE.md`)
 3. Skills are agent-agnostic — any agent that supports the standard skill format can use them
 
