@@ -12,20 +12,28 @@ description: Review npm/yarn packages for security risks before updating. Discov
 npm outdated --json
 
 # 2. Check known vulnerabilities
-npm audit --json
+npm audit --json --audit-level=moderate
 
 # 3. Inspect a specific package before updating
-mkdir -p /tmp/pkg-review && cd /tmp/pkg-review
-rm -rf *  # clean previous run
+TMPDIR=$(mktemp -d)
+cd "$TMPDIR"
+
+# Extract old version for diff
+npm pack <pkg>@<old-version> --quiet
+tar -xzf <pkg>-*.tgz
+mv package old/
+
+# Extract and inspect new version
 npm pack <pkg>@<new-version> --quiet
 tar -xzf <pkg>-*.tgz
 grep -rn 'eval(\|exec(\|child_process\|postinstall' package/
-diff -rq package/ <(npm pack <pkg>@<old-version> && tar -xzf <old-tar>)
-rm -rf /tmp/pkg-review  # cleanup
+diff -rq old/ package/
+
+rm -rf "$TMPDIR"  # cleanup
 
 # 4. Decision
 # ❌ Block: critical vulns, suspicious postinstall, eval/obfuscation
-# ⚠️ Review: unexpected new deps, large size increase
+# ⚠️ Review: unexpected new deps, large diff, size increase
 # ✅ Safe: all checks pass
 ```
 
