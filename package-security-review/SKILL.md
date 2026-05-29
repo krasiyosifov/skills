@@ -29,4 +29,4 @@ rm -rf /tmp/pkg-review  # cleanup
 # ✅ Safe: all checks pass
 ```
 
-See [REFERENCE.md](REFERENCE.md) for the full 5-phase playbook with commands and red flags.
+See [references/playbook.md](references/playbook.md) for the full 5-phase playbook with commands and red flags.

@@ -1,8 +1,8 @@
-# Package Security Review — Reference
+# Package Security Review Playbook
 
 ## Phase 1: Discovery & Metadata
 
-### What's outdated?
+### Check outdated status
 ```bash
 npm outdated --json
 yarn outdated
@@ -27,16 +27,15 @@ npm view <pkg> time.modified
 ### Built-in audit
 ```bash
 npm audit --json --audit-level=moderate
-npm audit --json
 ```
 
-### Deeper scan
+### Deeper scan (optional)
 ```bash
 npx audit-ci --critical
 npx snyk test
 ```
 
-**Decision gate:** If critical/high vulns exist → block the update unless a fix release is available.
+**Red flags:** Critical/high vulnerabilities → block the update unless a fix release is available.
 
 ---
 
@@ -44,9 +43,8 @@ npx snyk test
 
 ### Download and extract
 ```bash
-mkdir -p /tmp/pkg-review/<pkg>
-cd /tmp/pkg-review/<pkg>
-rm -rf *  # clean previous run
+mkdir -p /tmp/pkg-review && cd /tmp/pkg-review
+rm -rf *
 npm pack <pkg>@<version> --quiet
 tar -xzf <pkg>-*.tgz
 
@@ -78,7 +76,6 @@ grep -rn 'process.env\|process.stdout\|console.log' package/
 ### Obfuscation detection
 ```bash
 grep -rn 'eval(atob\|eval(btoa\|String.fromCharCode' package/
-grep -rn 'Buffer.from.*toString\|Buffer.alloc' package/
 ```
 
 **Red flags:** Any `postinstall` script, `eval`/`exec` usage, outbound POST requests, obfuscation patterns.
@@ -87,14 +84,22 @@ grep -rn 'Buffer.from.*toString\|Buffer.alloc' package/
 
 ## Phase 5: Diff & Dependency Audit
 
-### Compare with current version
+### Compare old vs new version
 ```bash
-cd /tmp/pkg-review/<pkg>
+TMPDIR=$(mktemp -d)
+cd "$TMPDIR"
+
+# Extract old version
 npm pack <pkg>@<old-version> --quiet --pack-destination=.
-tar -xzf <pkg>-*.tgz -C /tmp/pkg-review/ --strip-components=1 -f <old-tar>
+tar -xzf <pkg>-*.tgz
+mv package old/
+
+# Extract new version
+npm pack <pkg>@<new-version> --quiet --pack-destination=.
+tar -xzf <pkg>-*.tgz
 
 # Side-by-side diff
-diff -rq package/ <old-extracted-dir>/
+diff -rq old/ package/
 ```
 
 ### New dependencies
@@ -102,16 +107,11 @@ diff -rq package/ <old-extracted-dir>/
 npm ls <pkg>@<version> --all --json
 ```
 
-### Check new deps for vulns
-```bash
-npm audit --json --package-lock=/tmp/pkg-review/
-```
-
 **Red flags:** New dependencies you didn't expect, large diff in postinstall scripts, code that makes outbound network calls.
 
 ### Cleanup
 ```bash
-rm -rf /tmp/pkg-review
+rm -rf "$TMPDIR"
 ```
 
 ---

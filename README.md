@@ -1,23 +1,19 @@
 # skills
 Reusable AI agent skills
 
-## Structure
+## Available Skills
 
-```
-├── package-security-review/
-│   ├── SKILL.md
-│   └── REFERENCE.md
-├── AGENTS.md
-└── README.md
-```
+| Skill | Description |
+|-------|-------------|
+| [package-security-review](package-security-review/) | Review npm/yarn packages for security risks before updating. Discovers outdated packages, scans for vulnerabilities, inspects tarballs for suspicious code, and diffs old vs new versions. |
 
 ## Adding a skill
 
 1. Create a folder at the repository root named after the skill
-2. Add a `SKILL.md` (required) and any supporting files (e.g. `REFERENCE.md`)
+2. Add a `SKILL.md` (required) and any optional supporting files (`scripts/`, `references/`, `assets/`, etc.)
 3. Skills are agent-agnostic — any agent that supports the standard skill format can use them
 
-All skills must comply with the [Agent Skills specification](https://agentskills.io/client-implementation/adding-skills-support).
+All skills must comply with the [Agent Skills specification](https://agentskills.io/specification.md).
 
 ## Installing
 

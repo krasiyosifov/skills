@@ -1,49 +1,43 @@
 # AGENTS.md — Instructions for Coding Agents
 
-## About This Repo
+This repo holds reusable, agent-agnostic AI agent skills. Each skill lives in its own folder and follows the [Agent Skills specification](https://agentskills.io/specification.md).
 
-This repository contains reusable, agent-agnostic AI agent skills. Skills follow the [Agent Skills specification](https://agentskills.io/specification) and are designed to work across any compatible agent implementation.
-
-## Repository Structure
+## Repo Structure
 
 ```
-skills/
-├── AGENTS.md            ← You are here
-├── README.md            ← Public-facing documentation
-└── <skill-name>/
-    ├── SKILL.md           ← Required: skill definition
-    ├── REFERENCE.md       ← Optional: extended reference
-    └── references/        ← Optional: additional reference files
+.
+├── AGENTS.md            ← you are here
+├── README.md            ← public-facing docs
+└── <skill-name>/        ← one skill per folder
+    ├── SKILL.md         ← required: frontmatter + instructions
+    ├── scripts/         ← optional: executable code
+    ├── references/      ← optional: detailed playbooks, supporting docs
+    └── assets/          ← optional: templates, resources
 ```
 
 ## Skill Conventions
 
-### File Structure
+### SKILL.md
 
-Every skill lives in its own folder and must contain at minimum:
-
-- **`SKILL.md`** — The skill definition with frontmatter (`name`, `description`) and instructions
-- **`REFERENCE.md`** — Optional extended reference, commands, or playbooks
-
-### SKILL.md Format
+Must contain YAML frontmatter and markdown instructions:
 
 ```markdown
 ---
 name: <skill-name>
-description: <one-line description of when and what this skill does>
+description: <one-line: what it does + when to use it>
 ---
 
 # <Skill Name>
 
-<Instructions for the agent>
+<instructions>
 ```
 
-### Frontmatter
+**Frontmatter fields:**
 
 | Field | Required | Constraints |
 |-------|----------|-------------|
-| `name` | Yes | Max 64 chars. Lowercase alphanumeric + hyphens only. No leading/trailing/consecutive hyphens. Must match the parent directory name. |
-| `description` | Yes | Max 1024 chars. Must state what the skill does and when to use it. |
+| `name` | Yes | Max 64 chars. Lowercase alphanumeric + hyphens. No leading/trailing/consecutive hyphens. Must match the parent directory name. |
+| `description` | Yes | Max 1024 chars. State what the skill does and when to use it. Keywords drive discovery. |
 | `license` | No | License name or reference to a bundled license file. |
 | `compatibility` | No | Max 500 chars. Environment requirements (system packages, network access, etc.). |
 | `metadata` | No | Arbitrary key-value pairs (e.g. `author`, `version`). |
@@ -51,42 +45,39 @@ description: <one-line description of when and what this skill does>
 
 ### Rules
 
-1. **Agent-agnostic** — Skills must not reference any specific agent implementation (pi, Claude, Cursor, etc.). Use generic terms like "agent", "you", "the user".
-2. **Spec-compliant** — All skills must comply with the [Agent Skills specification](https://agentskills.io/specification). The `name` must match the parent directory, and follow all naming constraints.
-3. **Self-contained** — A skill should be usable by reading only its own folder. Reference files live in the same folder or in a `references/` subdirectory.
-4. **Descriptive frontmatter** — The `description` must clearly state what the skill does and when to use it, with keywords for discovery.
-5. **One skill per folder** — Each folder represents exactly one skill.
-6. **Kebab-case names** — Folder and `name` must use kebab-case (e.g. `package-security-review`).
-7. **Progressive disclosure** — Keep SKILL.md under 500 lines. Move detailed reference material to `REFERENCE.md` or files in `references/`. Agents load them on demand.
-8. **Shallow references** — File references in SKILL.md should be one level deep from the skill root. Avoid deeply nested reference chains.
+1. **Agent-agnostic** — No references to specific agent implementations (pi, Claude, Cursor, etc.). Use "agent", "you", "the user".
+2. **Spec-compliant** — Comply with the [Agent Skills specification](https://agentskills.io/specification.md). `name` must match the parent directory.
+3. **Self-contained** — A skill is usable by reading only its own folder. References live in the same folder or in `references/`.
+4. **One skill per folder** — No nesting skills inside each other's folders.
+5. **Kebab-case** — Folder and `name` use kebab-case (e.g. `package-security-review`).
+6. **Progressive disclosure** — Keep SKILL.md under 500 lines. Move detailed playbooks to files in `references/`.
+7. **Shallow references** — File references in SKILL.md should be one level deep from the skill root. No deeply nested reference chains.
 
 ## How to Use
 
 ### Discovering Skills
 
-Scan the repository root for available skills. The `SKILL.md` frontmatter `description` field is the primary discovery signal.
+Scan the repository root for available skills. The `SKILL.md` frontmatter `description` field is the primary discovery signal — pack it with relevant keywords.
 
-### Adding a New Skill
+### Adding a skill
 
-1. Create a folder at the repository root named after the skill
-2. Write `SKILL.md` with proper frontmatter — `name` must match the folder name and follow naming constraints
-3. Add `REFERENCE.md` or a `references/` directory for extended reference material
-4. Keep SKILL.md concise (under 500 lines); move detailed playbooks to referenced files
-5. Optionally add supporting files (scripts, templates, etc.)
+1. Create a folder at the repo root named after the skill
+2. Write `SKILL.md` with frontmatter — `name` must match the folder name
+3. Optionally add `scripts/`, `references/`, or `assets/`
+4. Keep SKILL.md under 500 lines
 
-### Editing an Existing Skill
+### Editing a skill
 
-1. Read the skill's `SKILL.md` to understand its current scope
-2. Make changes that stay within the skill's described purpose
-3. Update `REFERENCE.md` if behavior or commands have changed
-4. Keep the frontmatter `name` unchanged; update `description` only if the scope changes
+1. Read the skill's `SKILL.md` to understand its scope
+2. Make changes within the skill's described purpose
+3. Update files in `references/` if behavior changed
+4. Never modify the frontmatter `name` — it's the identity key
+5. Only update `description` if the skill's scope changes
 
 ## What NOT to Do
 
-- Do not add agent-specific language (no "pi", "Claude", "Cursor", etc.)
-- Do not nest skills inside each other's folders
-- Do not put non-skill files inside a skill folder
-- Do not modify a skill's `name` in frontmatter — it's the identity key and must match the folder
-- Do not hardcode paths, credentials, or machine-specific configuration
-- Do not put deeply nested file references in SKILL.md — keep them one level deep
-- Do not exceed 500 lines in SKILL.md — split detail into referenced files
+- Hardcode paths, credentials, or machine-specific configuration
+- Nest skills inside each other's folders
+- Modify a skill's `name` in frontmatter — it's the identity key
+- Exceed 500 lines in SKILL.md — split detail into referenced files
+- Use deeply nested file references — keep them one level deep
